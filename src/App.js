@@ -1,8 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import './App.css';
-import { MapWithADirectionsRenderer } from "./views/MapsWithADirectionsRenderer";
-import { Icon } from 'semantic-ui-react'
+import { Icon, } from 'semantic-ui-react'
+import Map from './views/Map/Map'
 
 class App extends Component {
   render() {
@@ -12,7 +12,7 @@ class App extends Component {
           <Icon name="bus" size="huge"/>
           <h1 className="App-title">Bus Stop</h1>
         </header>
-        <MapWithADirectionsRenderer/>
+        <Map/>
       </div>
     );
   }
