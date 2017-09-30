@@ -10,6 +10,7 @@ import {
   Marker,
 } from "react-google-maps";
 import busImage from '../media/smallBus.png'
+import houseImage from '../media/house.png'
 
 
 
@@ -64,6 +65,18 @@ export const MapWithADirectionsRenderer = compose(
         url: busImage,
         // This marker is 20 pixels wide by 32 pixels high.
         size: new google.maps.Size(70, 35),
+        // The origin for this image is (0, 0).
+        origin: new google.maps.Point(0, 0),
+        // The anchor for this image is the base of the flagpole at (0, 32).
+        anchor: new google.maps.Point(35, 10)
+      }}
+    />
+    <Marker
+      position={{ lat: 42.896602,  lng: -78.869652, }}
+      icon={{
+        url: houseImage,
+        // This marker is 20 pixels wide by 32 pixels high.
+        size: new google.maps.Size(50, 50),
         // The origin for this image is (0, 0).
         origin: new google.maps.Point(0, 0),
         // The anchor for this image is the base of the flagpole at (0, 32).
