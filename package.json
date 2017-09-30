@@ -1,0 +1,50 @@
+{
+  "name": "bus-stop-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "flow-typed": "^2.1.5",
+    "global": "^4.3.2",
+    "jsdom": "^11.2.0",
+    "lodash": "^4.17.4",
+    "mtgsdk": "^0.3.0",
+    "prop-types": "^15.5.10",
+    "react": "^15.6.1",
+    "react-beautiful-dnd": "^1.0.2",
+    "react-dom": "^15.6.1",
+    "react-measure": "^2.0.2",
+    "react-mentions": "^1.2.1",
+    "react-redux": "^5.0.6",
+    "react-router": "^4.1.2",
+    "react-router-redux": "^4.0.8",
+    "react-scripts": "1.0.11",
+    "react-virtualized": "^9.9.0",
+    "recharts": "^1.0.0-apha.5",
+    "redux": "^3.7.2",
+    "redux-immutable": "^4.0.0",
+    "redux-saga": "^0.15.6",
+    "request": "2.79.0",
+    "request-promise": "^4.2.1",
+    "reselect": "^3.0.1",
+    "semantic-ui-react": "^0.71.5",
+    "styled-components": "^2.1.2"
+  },
+  "scripts": {
+    "start": "cross-env react-scripts start",
+    "build": "cross-env react-scripts build",
+    "test": "cross-env NODE_PATH='src' react-scripts test",
+    "eject": "react-scripts eject",
+    "prepublish": "cross-env yarn run build",
+    "flow": "cross-env flow stop; cross-env flow",
+    "lint": "cross-env eslint src"
+  },
+  "devDependencies": {
+    "cross-env": "^5.0.5",
+    "enzyme": "^2.9.1",
+    "eslint": "^4.4.1",
+    "flow-bin": "0.47.0",
+    "flow-remove-types": "^1.2.1",
+    "jest": "^20.0.4",
+    "react-test-renderer": "^15.6.1"
+  }
+}

@@ -1,0 +1,36 @@
+
+[ignore]
+<PROJECT_ROOT>/node_modules/fbjs/.*
+<PROJECT_ROOT>/node_modules/flow-runtime/.*
+.*/styled-components/src/.*
+.*/styled-components/lib/models/StyleSheet.js.flow
+.*/react-beautiful-dnd/.*
+.*/raf-schd/.*
+.*/react-event-listener/.*
+.*/material-ui/.*
+.*/jss/.*
+.*/babel-plugin-transform-react-remove-prop-types/.*
+
+
+[libs]
+./node_modules/fbjs/flow/lib
+./flow-typed
+node_modules/styled-components/flow-typed/danger_v0.x.x.js
+node_modules/styled-components/flow-typed/fbjs_vx.x.x.js
+node_modules/styled-components/flow-typed/inline-style-prefixer_vx.x.x.js
+node_modules/styled-components/flow-typed/lodash_v4.x.x.js
+node_modules/styled-components/flow-typed/react-native.js
+
+[options]
+esproposal.class_static_fields=enable
+esproposal.class_instance_fields=enable
+
+module.name_mapper='^\(.*\)\.css$' -> 'react-scripts/config/jest/CSSStub'
+module.name_mapper='^\(.*\)\.\(jpg\|png\|gif\|eot\|svg\|ttf\|woff\|woff2\|mp4\|webm\)$' -> 'react-scripts/config/jest/FileStub'
+
+module.name_mapper='^App' -> '<PROJECT_ROOT>/src/App.js'
+module.name_mapper='^Types$' -> '<PROJECT_ROOT>/src/Types.js.flow'
+module.name_mapper='^modules\/\(.*\)$' -> '<PROJECT_ROOT>/src/modules/\1'
+module.name_mapper='^modules$' -> '<PROJECT_ROOT>/src/modules'
+module.name_mapper='^views\/\(.*\)$' -> '<PROJECT_ROOT>/src/views/\1'
+module.name_mapper='^views$' -> '<PROJECT_ROOT>/src/views'
