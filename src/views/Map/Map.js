@@ -82,7 +82,7 @@ class Map extends PureComponent{
           }}
         />
         <Marker
-          position={{lat: 42.896602, lng: -78.869652,}}
+          position={this.props.location.homeLocation}
           icon={{
             url: houseImage,
             // This marker is 20 pixels wide by 32 pixels high.

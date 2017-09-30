@@ -9,7 +9,8 @@ import {
 
 export const initialState: LocationState = {
   busLocation: { lat: 42.895106,  lng: -78.870186, },
-  homeLocation:  { lat: 42.896602,  lng: -78.869652, }
+  homeLocation:  { lat: 42.896602,  lng: -78.869652, },
+  // homeLocation:  { lat: 42.886430, lng : -78.878033 }
 }
 
 export default (state: LocationState = initialState, action: LocationActions) => {
