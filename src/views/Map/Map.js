@@ -16,11 +16,25 @@ import houseImage from '../../media/house.png'
 
 import { Button } from 'semantic-ui-react'
 import { locationFetchRequested } from "../../modules/location/actions";
-
+import firebase from 'firebase'
 
 class Map extends PureComponent{
   state = {
     distance: '---'
+  }
+
+  constructor(){
+    super()
+    var config = {
+      apiKey: "AIzaSyAq0UtWAxQKTGJAF1v-TvDJwWk1_DHDGBI",
+      authDomain: "busstop2017-1506747784897.firebaseapp.com",
+      databaseURL: "https://busstop2017-1506747784897.firebaseio.com",
+      projectId: "busstop2017-1506747784897",
+      storageBucket: "busstop2017-1506747784897.appspot.com",
+      messagingSenderId: "980482682485"
+    };
+    firebase.initializeApp(config);
+    this.db = firebase.database()
   }
 
   getMap() {
@@ -106,28 +120,28 @@ class Map extends PureComponent{
   // }
 
 
-  componentWillUpdate(nextProps, nextState){
-    var service = new google.maps.DistanceMatrixService();
-    const busLocation = nextProps.location.busLocation
-    const homeLocation = nextProps.location.homeLocation
-    service.getDistanceMatrix(
-      {
-        origins: [new google.maps.LatLng(busLocation.lat, busLocation.lng)],
-        destinations: [new google.maps.LatLng(homeLocation.lat, homeLocation.lng)],
-        travelMode: 'DRIVING',
-      }, (result, status) => {
-        if (status === google.maps.DistanceMatrixStatus.OK) {
-          // console.log(distance)
-          // console.log('Distance:', result.rows[0].elements[0].duration.text)
-          const distance =  result.rows[0].elements[0].duration.text
-
-          this.setState({distance: distance})
-        } else {
-          console.error(`error fetching directions ${result}`);
-        }
-      });
-
-  }
+  // componentWillUpdate(nextProps, nextState){
+  //   var service = new google.maps.DistanceMatrixService();
+  //   const busLocation = nextProps.location.busLocation
+  //   const homeLocation = nextProps.location.homeLocation
+  //   service.getDistanceMatrix(
+  //     {
+  //       origins: [new google.maps.LatLng(busLocation.lat, busLocation.lng)],
+  //       destinations: [new google.maps.LatLng(homeLocation.lat, homeLocation.lng)],
+  //       travelMode: 'DRIVING',
+  //     }, (result, status) => {
+  //       if (status === google.maps.DistanceMatrixStatus.OK) {
+  //         // console.log(distance)
+  //         // console.log('Distance:', result.rows[0].elements[0].duration.text)
+  //         const distance =  result.rows[0].elements[0].duration.text
+  //
+  //         this.setState({distance: distance})
+  //       } else {
+  //         console.error(`error fetching directions ${result}`);
+  //       }
+  //     });
+  //
+  // }
 
   render(): Element<any>{
     console.log('rendering')
@@ -139,7 +153,7 @@ class Map extends PureComponent{
       <div>
         <RenderedMap/>
         ETA: {this.state.distance}
-        <Button onClick={() => this.props.fetchLocation(1)}>Update</Button>
+        <Button onClick={() => this.props.fetchLocation(1, this.db)}>Update</Button>
       </div>
     )
   }
@@ -153,7 +167,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   return {
-    fetchLocation: ((id) => dispatch(locationFetchRequested(id))),
+    fetchLocation: ((id, db) => dispatch(locationFetchRequested(id, db))),
   }
 }
 

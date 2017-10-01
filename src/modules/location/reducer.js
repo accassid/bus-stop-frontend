@@ -18,7 +18,7 @@ export default (state: LocationState = initialState, action: LocationActions) =>
     case LOCATION_FETCH_SUCCEEDED:
       return{
         ...state,
-        busLocation: {lat: action.payload.latitude, lng: action.payload.longitude}
+        busLocation: {lat: action.payload.lat, lng: action.payload.lon}
       }
     case LOCATION_FETCH_FAILED:
       console.log(action.payload)

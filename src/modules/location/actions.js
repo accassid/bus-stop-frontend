@@ -7,11 +7,18 @@ export const LOCATION_FETCH_FAILED = 'location/LOCATION_FETCH_FAILED'
 
 export type LocationFetchRequestedAction = {
   type: 'location/LOCATION_FETCH_REQUESTED',
-  payload: number
+  payload: {
+    id: number,
+    db: any,
+  }
 }
-export const locationFetchRequested: (id: number) => LocationFetchRequestedAction = (id) => ({
+
+export const locationFetchRequested: (id: number, db: any) => LocationFetchRequestedAction = (id, db) => ({
   type: LOCATION_FETCH_REQUESTED,
-  payload: id
+  payload: {
+    id: id,
+    db: db,
+  }
 })
 
 
