@@ -11,16 +11,18 @@ import {
   DirectionsRenderer,
   Marker,
 } from "react-google-maps";
+// import InfoBox from "react-google-maps/lib/components/addons/InfoBox";
 import busImage from '../../media/smallBus.png'
 import houseImage from '../../media/house.png'
-
-import { Button } from 'semantic-ui-react'
+import { Message } from 'semantic-ui-react'
 import { locationFetchRequested } from "../../modules/location/actions";
 import firebase from 'firebase'
 
 class Map extends PureComponent{
   state = {
-    distance: '---'
+    distance: '---',
+    timer: null,
+    counter: 0,
   }
 
   constructor(){
@@ -35,15 +37,32 @@ class Map extends PureComponent{
     };
     firebase.initializeApp(config);
     this.db = firebase.database()
+    this.tick = this.tick.bind(this)
+  }
+
+  componentDidMount() {
+    let timer = setInterval(this.tick, 5000);
+    this.setState({timer});
+  }
+  componentWillUnmount() {
+    this.clearInterval(this.state.timer);
+  }
+  tick() {
+    this.props.fetchLocation(1, this.db)
+    // this.setState({
+    //   counter: this.state.counter + 1
+    // });
   }
 
   getMap() {
     const MapWithADirectionsRenderer = compose(
       withProps({
-        googleMapURL: "https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places",
-        loadingElement: <div style={{height: `100%`}}/>,
+        googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyA5BsI0gfyJ1Si-tu8yTlgUt9WPzlABegk&v=3.exp&libraries=geometry,drawing,places",
+        loadingElement: <div style={{height: `90%`}}/>,
         containerElement: <div style={{height: `750px`}}/>,
-        mapElement: <div style={{height: `100%`}}/>,
+        mapElement: <div style={{height: `90%`}}/>,
+        busLocation: this.props.location.busLocation,
+        homeLocation: this.props.location.homeLocation,
       }),
       withScriptjs,
       withGoogleMap,
@@ -64,10 +83,26 @@ class Map extends PureComponent{
                 location: '42.895106, -78.870186',
                 stopover: false,
               },
+              {
+                location: '42.895556, -78.873517',
+                stopover: false,
+              },
+              {
+                location: '42.896815, -78.870734',
+                stopover: false,
+              },
+              {
+                location: '42.898588, -78.870131',
+                stopover: false,
+              },
+              {
+                location: '42.898560, -78.867814',
+                stopover: false,
+              },
             ]
           }, (result, status) => {
             if (status === google.maps.DirectionsStatus.OK) {
-              console.log('Directions:', result)
+              // console.log('Directions:', result)
               this.setState({
                 directions: result,
               });
@@ -75,49 +110,94 @@ class Map extends PureComponent{
               console.error(`error fetching directions ${result}`);
             }
           });
+
+          var service = new google.maps.DistanceMatrixService();
+          const busLocation = this.props.busLocation
+          const homeLocation = this.props.homeLocation
+          service.getDistanceMatrix(
+            {
+              origins: [new google.maps.LatLng(busLocation.lat, busLocation.lng)],
+              destinations: [new google.maps.LatLng(homeLocation.lat, homeLocation.lng)],
+              travelMode: 'DRIVING',
+            }, (result, status) => {
+              if (status === google.maps.DistanceMatrixStatus.OK) {
+                const distance =  result.rows[0].elements[0].duration.text
+                // console.log(distance)
+                this.setState({distance: distance})
+              } else {
+                console.error(`error fetching directions ${result}`);
+              }
+            });
         }
       })
-    )(props =>
-      <GoogleMap
-        defaultZoom={7}
-        defaultCenter={new google.maps.LatLng(42.896277, -78.868893)}
-      >
-        {props.directions && <DirectionsRenderer directions={props.directions}/>}
-        <Marker
-          position={this.props.location.busLocation}
-          icon={{
-            url: busImage,
-            // This marker is 20 pixels wide by 32 pixels high.
-            size: new google.maps.Size(70, 35),
-            // The origin for this image is (0, 0).
-            origin: new google.maps.Point(0, 0),
-            // The anchor for this image is the base of the flagpole at (0, 32).
-            anchor: new google.maps.Point(35, 10)
-          }}
-        />
-        <Marker
-          position={this.props.location.homeLocation}
-          icon={{
-            url: houseImage,
-            // This marker is 20 pixels wide by 32 pixels high.
-            size: new google.maps.Size(50, 50),
-            // The origin for this image is (0, 0).
-            origin: new google.maps.Point(0, 0),
-            // The anchor for this image is the base of the flagpole at (0, 32).
-            anchor: new google.maps.Point(35, 10)
-          }}
-        />
-      </GoogleMap>
+    )(props => {
+      // let time = Number(this.state.distance.replace(/[^0-9]*/ig, ''))
+      return(
+        <div>
+          {
+            props.distance &&
+            <Message
+              error={Number(this.state.distance.replace(/[^0-9]*/ig, '')) <= 5}
+              success={Number(this.state.distance.replace(/[^0-9]*/ig, '')) > 5}
+              header={'Your bus is ' + props.distance + ' away.'}
+            />
+          }
+          <GoogleMap
+            defaultZoom={7}
+            defaultCenter={new google.maps.LatLng(42.896277, -78.868893)}
+          >
+            {props.directions && <DirectionsRenderer directions={props.directions}/>}
+            <Marker
+              position={this.props.location.busLocation}
+              icon={{
+                url: busImage,
+                // This marker is 20 pixels wide by 32 pixels high.
+                size: new google.maps.Size(70, 35),
+                // The origin for this image is (0, 0).
+                origin: new google.maps.Point(0, 0),
+                // The anchor for this image is the base of the flagpole at (0, 32).
+                anchor: new google.maps.Point(35, 10)
+              }}
+            />
+            <Marker
+              position={this.props.location.homeLocation}
+              icon={{
+                url: houseImage,
+                // This marker is 20 pixels wide by 32 pixels high.
+                size: new google.maps.Size(50, 50),
+                // The origin for this image is (0, 0).
+                origin: new google.maps.Point(0, 0),
+                // The anchor for this image is the base of the flagpole at (0, 32).
+                anchor: new google.maps.Point(35, 10)
+              }}
+            />
+          </GoogleMap>
+        </div>
+      )
+      }
     );
       return MapWithADirectionsRenderer
   }
 
-  // shouldComponentUpdate(nextProps, nextState){
-  //   if(nextProps.location.busLocation.lat === this.props.location.busLocation.lat && nextProps.location.busLocation.lng === this.props.location.busLocation.lng){
-  //     return false
-  //   }
-  //   return true
-  // }
+//   /            {props.distance &&
+// <InfoBox
+// defaultPosition={new google.maps.LatLng(this.props.location.busLocation.lat-0.00015, this.props.location.busLocation.lng)}
+// options={{ closeBoxURL: ``, enableEventPropagation: true }}
+// >
+// <div style={{ backgroundColor: Number(this.state.distance.replace(/[^0-9]*/ig, '')) < 5 ? 'red' : 'yellow', opacity: 0.75, padding: `12px` }}>
+// <div style={{ fontSize: `16px`, fontColor: `#08233B` }}>
+// {props.distance}
+// </div>
+// </div>
+// </InfoBox>
+// }
+
+  shouldComponentUpdate(nextProps, nextState){
+    if(nextProps.location.busLocation.lat === this.props.location.busLocation.lat && nextProps.location.busLocation.lng === this.props.location.busLocation.lng){
+      return false
+    }
+    return true
+  }
 
 
   // componentWillUpdate(nextProps, nextState){
@@ -131,8 +211,6 @@ class Map extends PureComponent{
   //       travelMode: 'DRIVING',
   //     }, (result, status) => {
   //       if (status === google.maps.DistanceMatrixStatus.OK) {
-  //         // console.log(distance)
-  //         // console.log('Distance:', result.rows[0].elements[0].duration.text)
   //         const distance =  result.rows[0].elements[0].duration.text
   //
   //         this.setState({distance: distance})
@@ -144,16 +222,23 @@ class Map extends PureComponent{
   // }
 
   render(): Element<any>{
-    console.log('rendering')
-    console.log(this.state.distance)
+    // console.log('rendering')
+    // console.log(this.state.distance)
     // console.log(this.props.location.busLocation)
 
+    // let time = Number(this.state.distance.replace(/[^0-9]*/ig, ''))
+    // console.log(time)
     const RenderedMap = this.getMap()
     return(
       <div>
+        {/*<Message*/}
+          {/*error={time <= 5}*/}
+          {/*success={time > 5}*/}
+          {/*header={'Your bus is '+this.state.distance+' away.'}*/}
+        {/*/>*/}
+        {/*<Button onClick={() => this.props.fetchLocation(1, this.db)}>Update</Button>*/}
         <RenderedMap/>
-        ETA: {this.state.distance}
-        <Button onClick={() => this.props.fetchLocation(1, this.db)}>Update</Button>
+        {/*<Button onClick={() => this.props.fetchLocation(1, this.db)}>Update</Button>*/}
       </div>
     )
   }

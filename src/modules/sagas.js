@@ -15,7 +15,7 @@ function* fetchLocation(): Generator<*, *, *> {
     const action: LocationFetchRequestedAction = yield take(LOCATION_FETCH_REQUESTED)
     try {
       const results = yield call(getResults, action.payload)
-      console.log(results)
+      // console.log(results)
       yield put({type: LOCATION_FETCH_SUCCEEDED, payload: results})
     } catch (e) {
       yield put({type: LOCATION_FETCH_FAILED, payload: e.message})
